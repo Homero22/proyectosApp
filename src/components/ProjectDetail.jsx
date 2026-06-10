@@ -7,6 +7,7 @@ import * as LucideIcons from 'lucide-react';
 export function ProjectDetail({ project, activities, logs = [], onBack, onAddActivity, onEditActivity, onToggleActivity, onDeleteActivity }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingActivityId, setEditingActivityId] = useState(null);
+  const [activityToDelete, setActivityToDelete] = useState(null);
   const [newTitle, setNewTitle] = useState('');
   const [newType, setNewType] = useState('one-time'); // 'one-time' | 'recurring'
 
@@ -86,20 +87,20 @@ export function ProjectDetail({ project, activities, logs = [], onBack, onAddAct
             )}
           </div>
         </div>
-        <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity gap-1">
+        <div className="flex items-center opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity gap-1">
           <button 
             onClick={() => openEditModal(act)}
-            className="p-2 text-gray-400 hover:text-indigo-500 transition-all rounded-lg hover:bg-indigo-50"
+            className="p-2 md:p-1 text-gray-400 hover:text-indigo-500 transition-all rounded-lg hover:bg-indigo-50"
             title="Editar"
           >
-            <LucideIcons.Edit2 size={16} />
+            <LucideIcons.Edit2 size={18} className="md:w-4 md:h-4" />
           </button>
           <button 
-            onClick={() => onDeleteActivity(act.id)}
-            className="p-2 text-gray-400 hover:text-red-500 transition-all rounded-lg hover:bg-red-50"
+            onClick={() => setActivityToDelete(act.id)}
+            className="p-2 md:p-1 text-gray-400 hover:text-red-500 transition-all rounded-lg hover:bg-red-50"
             title="Eliminar"
           >
-            <LucideIcons.Trash2 size={16} />
+            <LucideIcons.Trash2 size={18} className="md:w-4 md:h-4" />
           </button>
         </div>
       </div>
@@ -256,6 +257,19 @@ export function ProjectDetail({ project, activities, logs = [], onBack, onAddAct
             <Button type="submit">{editingActivityId ? "Guardar" : "Crear"}</Button>
           </div>
         </form>
+      </Modal>
+
+      <Modal isOpen={!!activityToDelete} onClose={() => setActivityToDelete(null)} title="Confirmar Eliminación">
+        <div className="space-y-4">
+          <p className="text-gray-600">
+            ¿Estás seguro de que deseas eliminar esta actividad de forma permanente? 
+            Esta acción no se puede deshacer y borrará su registro del diario.
+          </p>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button variant="ghost" onClick={() => setActivityToDelete(null)}>Cancelar</Button>
+            <Button className="bg-red-500 hover:bg-red-600 shadow-sm" onClick={() => { onDeleteActivity(activityToDelete); setActivityToDelete(null); }}>Eliminar</Button>
+          </div>
+        </div>
       </Modal>
     </div>
   );

@@ -9,6 +9,7 @@ const ICONS_LIST = ['Briefcase', 'Code', 'Palette', 'BookOpen', 'Dumbbell', 'Cof
 export function Dashboard({ projects, activities, logs, onAddProject, onEditProject, onSelectProject, onDeleteProject, exportData, importData }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState(null);
+  const [projectToDelete, setProjectToDelete] = useState(null);
   const [projectName, setProjectName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState(ICONS_LIST[0]);
   
@@ -27,6 +28,11 @@ export function Dashboard({ projects, activities, logs, onAddProject, onEditProj
     setProjectName(project.name);
     setSelectedIcon(project.iconName || ICONS_LIST[0]);
     setIsModalOpen(true);
+  };
+
+  const confirmDelete = (projectId, e) => {
+    e.stopPropagation();
+    setProjectToDelete(projectId);
   };
 
   const handleSaveProject = (e) => {
@@ -174,20 +180,20 @@ export function Dashboard({ projects, activities, logs, onAddProject, onEditProj
                   <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Icon size={24} />
                   </div>
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                     <button 
                       onClick={(e) => openEditModal(project, e)}
-                      className="text-gray-300 hover:text-indigo-500 transition-colors p-1"
+                      className="text-gray-300 hover:text-indigo-500 transition-colors p-2 md:p-1"
                       title="Editar proyecto"
                     >
-                      <LucideIcons.Edit2 size={16} />
+                      <LucideIcons.Edit2 size={18} className="md:w-4 md:h-4" />
                     </button>
                     <button 
-                      onClick={(e) => { e.stopPropagation(); onDeleteProject(project.id); }}
-                      className="text-gray-300 hover:text-red-500 transition-colors p-1"
+                      onClick={(e) => confirmDelete(project.id, e)}
+                      className="text-gray-300 hover:text-red-500 transition-colors p-2 md:p-1"
                       title="Eliminar proyecto"
                     >
-                      <LucideIcons.Trash2 size={16} />
+                      <LucideIcons.Trash2 size={18} className="md:w-4 md:h-4" />
                     </button>
                   </div>
                 </div>
@@ -255,6 +261,19 @@ export function Dashboard({ projects, activities, logs, onAddProject, onEditProj
             <Button type="submit">{editingProjectId ? "Guardar" : "Crear"}</Button>
           </div>
         </form>
+      </Modal>
+
+      <Modal isOpen={!!projectToDelete} onClose={() => setProjectToDelete(null)} title="Confirmar Eliminación">
+        <div className="space-y-4">
+          <p className="text-gray-600">
+            ¿Estás seguro de que deseas eliminar este proyecto y todas sus actividades registradas? 
+            Esta acción no se puede deshacer.
+          </p>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button variant="ghost" onClick={() => setProjectToDelete(null)}>Cancelar</Button>
+            <Button className="bg-red-500 hover:bg-red-600 shadow-sm" onClick={() => { onDeleteProject(projectToDelete); setProjectToDelete(null); }}>Eliminar</Button>
+          </div>
+        </div>
       </Modal>
     </div>
   );
