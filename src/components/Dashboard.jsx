@@ -92,16 +92,17 @@ export function Dashboard({ projects, activities, logs, onAddProject, onEditProj
             <span className="hidden sm:inline">Exportar</span>
           </Button>
           
-          <label className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer shadow-sm focus-within:ring-2 focus-within:ring-indigo-500/50" title="Importar Respaldo">
+          <div className="relative inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer shadow-sm focus-within:ring-2 focus-within:ring-indigo-500/50" title="Importar Respaldo">
             <LucideIcons.Upload size={18} className="text-gray-500" />
             <span className="hidden sm:inline">Importar</span>
             <input 
               type="file" 
-              accept=".json,application/json,text/plain" 
-              className="hidden" 
-              onChange={handleFileChange} 
+              accept=".json,application/json,text/plain,*/*" 
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+              onChange={handleFileChange}
+              onClick={(e) => { e.target.value = null }}
             />
-          </label>
+          </div>
           
           <Button onClick={openCreateModal}>
             <LucideIcons.Plus size={20} />
